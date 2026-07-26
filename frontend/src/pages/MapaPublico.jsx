@@ -21,59 +21,20 @@ function MapaPublico() {
 
   useEffect(() => {
     if (elementoMapaRef.current !== null) {
-      // Definindo a localização da nossa UBS para centralizar o mapa
-      const coordenadasUBS = fromLonLat([-44.246, -2.555]);
+      // Coordenadas centrais para abrir o mapa (São Luís - MA)ar o mapa
+      const centroInicial = fromLonLat([-44.246, -2.555]);
 
-      // Criando o objeto que representará o ponto da UBS no mapa
-      const marcadorUBS = new Feature({
-        geometry: new Point(coordenadasUBS),
-        name: 'Unidade Mista São Bernardo',
-      });
-
-      // Aplicando aquele estilo que desenhamos no Figma: círculo vermelho com "H"
-      marcadorUBS.setStyle(
-        new Style({
-          image: new CircleStyle({
-            radius: 14,
-            fill: new Fill({ color: '#e11d48' }),
-            stroke: new Stroke({
-              color: '#ffffff',
-              width: 3,
-            }),
-          }),
-          // Adicionando o "H" de hospital centralizado na bolinha
-          text: new Text({
-            text: 'H',
-            font: 'bold 12px sans-serif',
-            fill: new Fill({ color: '#ffffff' }),
-            textAlign: 'center',
-            textBaseline: 'middle',
-          }),
-        })
-      );
-
-      // Agrupando o marcador para poder adicioná-lo ao mapa
-      const fonteVetor = new VectorSource({
-        features: [marcadorUBS],
-      });
-
-      // Criando a camada que vai exibir os marcadores na tela
-      const camadaMarcadores = new VectorLayer({
-        source: fonteVetor,
-      });
-
-      // Montando o mapa com a camada de fundo (OSM) e nossos pontos personalizados
+      // Criando o mapa apenas com a camada base
       const map = new Map({
         layers: [
           new TileLayer({
             source: new OSM(),
           }),
-          camadaMarcadores,
         ],
         target: elementoMapaRef.current,
         view: new View({
-          center: coordenadasUBS,
-          zoom: 15,
+          center: centroInicial,
+          zoom: 13,
         }),
       });
 
@@ -110,6 +71,16 @@ function MapaPublico() {
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', fontFamily: 'sans-serif' }}>
       
+      <style>{`
+        .ol-zoom{
+          top: initial !important; 
+          left: 20px !important;
+
+          bottom: 20px !important;
+          right: initial !important; 
+        }
+      `}</style>
+
       {/* Atalho de acessibilidade para quem usa teclado */}
       <a 
         href="#mapa-publico-ubs"
@@ -151,7 +122,6 @@ function MapaPublico() {
 
         <nav style={{ display: 'flex', gap: '25px', color: '#555555', fontSize: '14px', fontWeight: '500' }}>
           <span style={{ color: '#003366', borderBottom: '2px solid #003366', paddingBottom: '4px', cursor: 'pointer' }}>Início</span>
-          <span style={{ cursor: 'pointer' }}>Unidades de Saúde</span>
           <span style={{ cursor: 'pointer' }}>Serviços</span>
           <span style={{ cursor: 'pointer' }}>Dúvidas</span>
         </nav>
@@ -176,7 +146,7 @@ function MapaPublico() {
       {/* Área principal: Mapa com a sidebar de busca */}
       <div style={{ flex: 1, position: 'relative', width: '100%' }}>
         
-        {/* Painel lateral de controle (estilo Figma) */}
+        {/* Painel lateral de controle */}
         <div style={{
           position: 'absolute',
           top: '20px',
@@ -223,21 +193,8 @@ function MapaPublico() {
             </p>
           </div>
 
-          {/* Botões de controle de zoom */}
-          <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-            <button 
-              onClick={lidarZoomIn}
-              style={{ flex: 1, padding: '10px', backgroundColor: '#003366', color: '#ffffff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
-            >
-              Aumentar Zoom
-            </button>
-            <button 
-              onClick={lidarZoomOut}
-              style={{ flex: 1, padding: '10px', backgroundColor: '#64748b', color: '#ffffff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
-            >
-              Diminuir Zoom
-            </button>
-          </div>
+
+
         </div>
 
         {/* Local onde o mapa será renderizado */}
