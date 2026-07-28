@@ -20,9 +20,13 @@ app.use(cors()); //libera a conexão do frontend
 app.use(express.json()); //premite receber dados em formato JSON
 
 
-//rota de testa para verificar se o servidor está rodando
+//rota de status da api
 app.get('/',(req,res) =>{
-    return res.json({mensagem: 'API rodando com sucesso!'});
+    return res.json({
+        sistema: 'Georreferenciamento UBS',
+        status: 'ativo',
+        versao: '0.1.0'
+    });
 });
 
 
